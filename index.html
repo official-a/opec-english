@@ -1,0 +1,844 @@
+<!DOCTYPE html>
+<html lang="en" class="dark">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>OPEC & OPEC+ Energy Geopolitics Certification Quiz</title>
+
+  <!-- Google Fonts & FontAwesome Icons -->
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=Space+Grotesk:wght@500;600;700&display=swap">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+
+  <!-- Tailwind CSS -->
+  <script src="https://cdn.tailwindcss.com"></script>
+
+  <!-- Chart.js -->
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+  <script>
+    tailwind.config = {
+      darkMode: 'class',
+      theme: {
+        extend: {
+          colors: {
+            brandDark: '#0D1117',
+            brandCard: '#161B22',
+            brandBorder: '#30363D',
+            gold: {
+              300: '#FDE047',
+              400: '#FACC15',
+              500: '#D4AF37',
+              600: '#B8860B',
+              700: '#8B6508'
+            }
+          },
+          fontFamily: {
+            sans: ['Plus Jakarta Sans', 'sans-serif'],
+            mono: ['Space Grotesk', 'monospace']
+          }
+        }
+      }
+    }
+  </script>
+
+  <style>
+    body {
+      background-color: #0D1117;
+      color: #E6EDF3;
+      font-family: 'Plus Jakarta Sans', sans-serif;
+    }
+
+    ::-webkit-scrollbar {
+      width: 6px;
+      height: 6px;
+    }
+    ::-webkit-scrollbar-track {
+      background: #161B22;
+    }
+    ::-webkit-scrollbar-thumb {
+      background: #30363D;
+      border-radius: 4px;
+    }
+    ::-webkit-scrollbar-thumb:hover {
+      background: #D4AF37;
+    }
+
+    .glass-panel {
+      background: rgba(22, 27, 34, 0.85);
+      backdrop-filter: blur(12px);
+      border: 1px solid rgba(212, 175, 55, 0.2);
+    }
+
+    .gold-glow {
+      box-shadow: 0 0 20px rgba(212, 175, 55, 0.15);
+    }
+
+    .gold-glow-hover:hover {
+      border-color: rgba(212, 175, 55, 0.5);
+      box-shadow: 0 0 25px rgba(212, 175, 55, 0.25);
+    }
+
+    .option-btn {
+      transition: all 0.2s ease-in-out;
+    }
+
+    .option-btn:hover:not(:disabled) {
+      border-color: #D4AF37;
+      background-color: rgba(212, 175, 55, 0.1);
+      transform: translateY(-1px);
+    }
+  </style>
+</head>
+<body class="min-h-screen flex flex-col justify-between antialiased">
+
+  <!-- Header Banner & Navigation Dashboard -->
+  <header class="sticky top-0 z-40 bg-brandDark/90 backdrop-blur-md border-b border-brandBorder px-4 lg:px-8 py-3">
+    <div class="max-w-7xl mx-auto flex flex-col md:flex-row md:items-center md:justify-between gap-4">
+      
+      <!-- Brand & Title -->
+      <div class="flex items-center gap-3">
+        <div class="w-10 h-10 rounded-xl bg-gradient-to-br from-gold-400 to-gold-700 flex items-center justify-center text-brandDark font-black text-xl shadow-lg shadow-gold-500/20">
+          <i class="fa-solid fa-oil-well"></i>
+        </div>
+        <div>
+          <h1 class="text-base font-bold text-white tracking-wide">OPEC & OPEC+ Geopolitics Master Quiz</h1>
+          <p class="text-xs text-gold-500 font-medium">20 Comprehensive Executive Assessment Questions</p>
+        </div>
+      </div>
+
+      <!-- Live Dashboard Bar Stats -->
+      <div class="flex items-center gap-4 text-xs font-medium overflow-x-auto pb-1 md:pb-0">
+        <!-- Score Card -->
+        <div class="bg-brandCard px-3 py-1.5 rounded-lg border border-brandBorder flex items-center gap-2">
+          <i class="fa-solid fa-trophy text-gold-400"></i>
+          <span class="text-slate-400">Score:</span>
+          <span id="stat-score" class="font-mono text-white font-bold">0 / 20</span>
+        </div>
+        <!-- High Score -->
+        <div class="bg-brandCard px-3 py-1.5 rounded-lg border border-brandBorder flex items-center gap-2">
+          <i class="fa-solid fa-star text-gold-400"></i>
+          <span class="text-slate-400">Best:</span>
+          <span id="stat-high-score" class="font-mono text-gold-400 font-bold">0</span>
+        </div>
+
+        <!-- Timer -->
+        <div class="bg-brandCard px-3 py-1.5 rounded-lg border border-brandBorder flex items-center gap-2">
+          <i class="fa-regular fa-clock text-gold-400"></i>
+          <span class="text-slate-400">Time:</span>
+          <span id="stat-timer" class="font-mono text-white font-bold">00:00</span>
+        </div>
+
+        <!-- Timer Toggle Button -->
+        <button onclick="toggleTimerMode()" id="timer-toggle-btn" class="px-2.5 py-1.5 rounded-lg bg-brandBorder hover:bg-slate-700 text-slate-300 transition text-xs flex items-center gap-1.5">
+          <i class="fa-solid fa-stopwatch"></i> <span id="timer-status-text">Pause Timer</span>
+        </button>
+      </div>
+
+    </div>
+
+    <!-- Progress Bar -->
+    <div class="max-w-7xl mx-auto mt-3 bg-brandCard h-1.5 rounded-full overflow-hidden border border-brandBorder">
+      <div id="quiz-progress-bar" class="bg-gradient-to-r from-gold-600 via-gold-400 to-gold-300 h-full w-0 transition-all duration-300"></div>
+    </div>
+  </header>
+
+  <!-- Main Container -->
+  <main class="max-w-7xl mx-auto w-full px-4 lg:px-8 py-6 flex-1 grid grid-cols-1 lg:grid-cols-12 gap-6">
+
+    <!-- Left Controls & Search Sidebar -->
+    <aside class="lg:col-span-4 space-y-6">
+
+      <!-- Topic Filter Card -->
+      <div class="glass-panel p-5 rounded-2xl gold-glow-hover">
+        <h2 class="text-sm font-bold text-white uppercase tracking-wider mb-3 flex items-center gap-2">
+          <i class="fa-solid fa-filter text-gold-400"></i> Category Filters
+        </h2>
+        <div class="space-y-1.5 text-xs">
+          <button onclick="setCategoryFilter('all')" class="cat-filter-btn active w-full py-2 px-3 rounded-lg text-left flex justify-between items-center transition bg-gold-500/20 text-gold-400 font-bold border border-gold-500/30">
+            <span>All Core Topics</span>
+            <span class="bg-brandDark px-2 py-0.5 rounded text-[10px]" id="cnt-all">20</span>
+          </button>
+          <button onclick="setCategoryFilter('Founding & History')" class="cat-filter-btn w-full py-2 px-3 rounded-lg text-left flex justify-between items-center transition text-slate-400 hover:text-white hover:bg-brandCard">
+            <span>1. Founding & History</span>
+            <span class="bg-brandDark px-2 py-0.5 rounded text-[10px]">4</span>
+          </button>
+          <button onclick="setCategoryFilter('Structure & Governance')" class="cat-filter-btn w-full py-2 px-3 rounded-lg text-left flex justify-between items-center transition text-slate-400 hover:text-white hover:bg-brandCard">
+            <span>2. Structure & Governance</span>
+            <span class="bg-brandDark px-2 py-0.5 rounded text-[10px]">4</span>
+          </button>
+          <button onclick="setCategoryFilter('Market Dynamics & Economics')" class="cat-filter-btn w-full py-2 px-3 rounded-lg text-left flex justify-between items-center transition text-slate-400 hover:text-white hover:bg-brandCard">
+            <span>3. Market Dynamics & Economics</span>
+            <span class="bg-brandDark px-2 py-0.5 rounded text-[10px]">4</span>
+          </button>
+          <button onclick="setCategoryFilter('OPEC+ & Geopolitics')" class="cat-filter-btn w-full py-2 px-3 rounded-lg text-left flex justify-between items-center transition text-slate-400 hover:text-white hover:bg-brandCard">
+            <span>4. OPEC+ & Geopolitics</span>
+            <span class="bg-brandDark px-2 py-0.5 rounded text-[10px]">4</span>
+          </button>
+          <button onclick="setCategoryFilter('Energy Transition & Future')" class="cat-filter-btn w-full py-2 px-3 rounded-lg text-left flex justify-between items-center transition text-slate-400 hover:text-white hover:bg-brandCard">
+            <span>5. Energy Transition & Future</span>
+            <span class="bg-brandDark px-2 py-0.5 rounded text-[10px]">4</span>
+          </button>
+        </div>
+      </div>
+
+      <!-- Quick Search Card -->
+      <div class="glass-panel p-5 rounded-2xl">
+        <h2 class="text-sm font-bold text-white uppercase tracking-wider mb-3 flex items-center gap-2">
+          <i class="fa-solid fa-magnifying-glass text-gold-400"></i> Question Finder
+        </h2>
+        <div class="relative">
+          <input type="text" id="search-input" onkeyup="filterQuestionsBySearch()" placeholder="Search keywords (e.g., Vienna, WTI, Quotas)..." class="w-full bg-brandDark border border-brandBorder focus:border-gold-500 rounded-xl px-3.5 py-2.5 text-xs text-white placeholder-slate-500 outline-none transition">
+        </div>
+        <div id="search-results-list" class="mt-3 max-h-48 overflow-y-auto space-y-1 text-xs text-slate-400 pr-1 hidden"></div>
+      </div>
+
+      <!-- Test Navigation Grid -->
+      <div class="glass-panel p-5 rounded-2xl">
+        <div class="flex justify-between items-center mb-3">
+          <h2 class="text-sm font-bold text-white uppercase tracking-wider flex items-center gap-2">
+            <i class="fa-solid fa-grip text-gold-400"></i> Question Map
+          </h2>
+          <span id="question-map-counter" class="text-[10px] text-slate-400 font-mono">20 Questions</span>
+        </div>
+        <div id="question-grid" class="grid grid-cols-5 gap-2"></div>
+      </div>
+
+    </aside>
+
+    <!-- Right Main Interactive Area -->
+    <section class="lg:col-span-8 flex flex-col justify-between">
+
+      <!-- Question Viewport -->
+      <div id="quiz-card-view" class="glass-panel p-6 lg:p-8 rounded-2xl gold-glow space-y-6">
+
+        <!-- Question Meta Header -->
+        <div class="flex flex-wrap items-center justify-between gap-2 border-b border-brandBorder pb-4">
+          <div class="flex items-center gap-2">
+            <span id="q-category-tag" class="px-3 py-1 bg-gold-500/10 text-gold-400 border border-gold-500/20 rounded-full text-xs font-bold">
+              Topic Category
+            </span>
+            <span id="q-number-tag" class="text-xs font-mono font-bold text-slate-400">
+              QUESTION 1 OF 20
+            </span>
+          </div>
+          <span id="q-difficulty-tag" class="text-[11px] font-semibold text-emerald-400 px-2 py-0.5 bg-emerald-500/10 border border-emerald-500/20 rounded">
+            Executive Level
+          </span>
+        </div>
+
+        <!-- Question Prompt -->
+        <div>
+          <h2 id="question-text" class="text-lg lg:text-xl font-bold text-white leading-relaxed">
+            Loading Question...
+          </h2>
+        </div>
+
+        <!-- Answer Options Container -->
+        <div id="options-container" class="space-y-3"></div>
+
+        <!-- Instant Explanation Card -->
+        <div id="explanation-card" class="hidden p-5 rounded-xl text-xs space-y-2 border transition-all">
+          <div class="flex items-center gap-2 font-bold text-sm" id="exp-title"></div>
+          <p id="exp-text" class="text-slate-300 leading-relaxed"></p>
+        </div>
+
+        <!-- Action Controls Bar -->
+        <div class="flex items-center justify-between pt-4 border-t border-brandBorder">
+          <button onclick="prevQuestion()" id="prev-btn" class="px-4 py-2.5 bg-brandDark border border-brandBorder hover:border-slate-600 rounded-xl text-xs font-bold text-slate-300 transition flex items-center gap-2 disabled:opacity-40 disabled:cursor-not-allowed">
+            <i class="fa-solid fa-arrow-left"></i> Previous
+          </button>
+
+          <div class="flex items-center gap-2">
+            <button onclick="skipQuestion()" id="skip-btn" class="px-4 py-2.5 bg-brandDark border border-brandBorder hover:border-slate-600 rounded-xl text-xs font-bold text-slate-400 transition">
+              Skip
+            </button>
+            <button onclick="nextQuestion()" id="next-btn" class="px-5 py-2.5 bg-gold-500 hover:bg-gold-400 text-brandDark font-extrabold rounded-xl text-xs transition flex items-center gap-2 shadow-lg shadow-gold-500/20">
+              <span>Next</span> <i class="fa-solid fa-arrow-right"></i>
+            </button>
+          </div>
+        </div>
+
+      </div>
+
+      <!-- Final Results Dashboard (Hidden until complete) -->
+      <div id="results-dashboard" class="hidden glass-panel p-8 rounded-2xl gold-glow space-y-8">
+        <div class="text-center space-y-3 border-b border-brandBorder pb-6">
+          <div class="inline-flex p-4 rounded-full bg-gold-500/10 border border-gold-500/30 text-gold-400 text-3xl mb-2">
+            <i class="fa-solid fa-award"></i>
+          </div>
+          <h2 class="text-3xl font-black text-white">Executive Assessment Complete</h2>
+          <p class="text-slate-400 text-sm max-w-lg mx-auto">
+            You have answered all questions in the OPEC & OPEC+ Geopolitics Exam. Here is your strategic competency performance report.
+          </p>
+        </div>
+
+        <!-- Primary Performance Rank & Key Metrics -->
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+          <div class="bg-brandDark p-5 rounded-xl border border-brandBorder text-center">
+            <span class="text-xs text-slate-400 font-semibold uppercase">Overall Accuracy</span>
+            <p id="res-accuracy-pct" class="text-4xl font-black font-mono text-gold-400 mt-2">0%</p>
+            <span id="res-score-raw" class="text-[11px] text-slate-400 block mt-1">0 / 20 Correct</span>
+          </div>
+
+          <div class="bg-brandDark p-5 rounded-xl border border-brandBorder text-center">
+            <span class="text-xs text-slate-400 font-semibold uppercase">Assigned Strategic Rank</span>
+            <p id="res-rank-title" class="text-lg font-bold font-mono text-white mt-2">Energy Economist</p>
+            <span id="res-rank-subtitle" class="text-[11px] text-gold-500 block mt-1">Top Tier Competency</span>
+          </div>
+
+          <div class="bg-brandDark p-5 rounded-xl border border-brandBorder text-center">
+            <span class="text-xs text-slate-400 font-semibold uppercase">Total Time Spent</span>
+            <p id="res-time-spent" class="text-4xl font-black font-mono text-white mt-2">00:00</p>
+            <span class="text-[11px] text-slate-400 block mt-1">Executive Pace</span>
+          </div>
+        </div>
+
+        <!-- Category Breakdown Analytics Chart -->
+        <div class="space-y-3">
+          <h3 class="text-sm font-bold text-white uppercase tracking-wider flex items-center gap-2">
+            <i class="fa-solid fa-chart-column text-gold-400"></i> Topic Mastery Breakdown
+          </h3>
+          <div class="bg-brandDark p-4 rounded-xl border border-brandBorder h-64">
+            <canvas id="categoryChart"></canvas>
+          </div>
+        </div>
+
+        <!-- Action Control Buttons -->
+        <div class="flex flex-wrap items-center justify-center gap-4 pt-4 border-t border-brandBorder">
+          <button onclick="startReviewMode()" class="px-6 py-3 bg-brandDark border border-gold-500/40 text-gold-400 font-bold text-xs rounded-xl hover:bg-gold-500/10 transition flex items-center gap-2">
+            <i class="fa-solid fa-magnifying-glass"></i> Review All Answers
+          </button>
+          <button onclick="restartQuiz()" class="px-6 py-3 bg-gold-500 text-brandDark font-extrabold text-xs rounded-xl hover:bg-gold-400 transition flex items-center gap-2 shadow-lg shadow-gold-500/20">
+            <i class="fa-solid fa-rotate-right"></i> Retake Full Exam
+          </button>
+        </div>
+      </div>
+
+    </section>
+
+  </main>
+
+  <!-- Footer -->
+  <footer class="border-t border-brandBorder py-4 px-8 text-center text-xs text-slate-500">
+    <div class="max-w-7xl mx-auto flex flex-col sm:flex-row justify-between items-center gap-2">
+      <span>OPEC & OPEC+ Geopolitics Strategic Intelligence Suite</span>
+      <span>Designed for Executive Briefings & Presentations</span>
+    </div>
+  </footer>
+
+  <!-- Complete JavaScript App Logic -->
+  <script>
+    const questions = [
+      {
+        id: 1,
+        category: "Founding & History",
+        question: "In September 1960, which five sovereign nations convened at the Baghdad Conference to officially found OPEC?",
+        options: [
+          "A) Saudi Arabia, Russia, Iraq, Kuwait, Venezuela",
+          "B) Iran, Iraq, Kuwait, Saudi Arabia, Venezuela",
+          "C) UAE, Saudi Arabia, Qatar, Iran, Nigeria",
+          "D) Saudi Arabia, Iraq, Libya, Venezuela, Indonesia"
+        ],
+        correct: 1,
+        explanation: "OPEC was established at the Baghdad Conference on September 10–14, 1960, by five founding members: Iran, Iraq, Kuwait, Saudi Arabia, and Venezuela."
+      },
+      {
+        id: 2,
+        category: "Founding & History",
+        question: "In what year did OPEC relocate its official headquarters from Geneva, Switzerland, to Vienna, Austria?",
+        options: ["A) 1960", "B) 1965", "C) 1973", "D) 1980"],
+        correct: 1,
+        explanation: "OPEC was originally headquartered in Geneva, Switzerland, for its first five years before moving to Vienna, Austria, on September 1, 1965."
+      },
+      {
+        id: 3,
+        category: "Founding & History",
+        question: "What primary structural shift in global oil dominance triggered the formation of OPEC in 1960?",
+        options: [
+          "A) The complete nationalization of Russian oilfields",
+          "B) The uncoordinated price cuts imposed by major Western oil companies ('Seven Sisters')",
+          "C) The sudden opening of US Strategic Petroleum Reserves",
+          "D) The signing of the Kyoto Protocol"
+        ],
+        correct: 1,
+        explanation: "OPEC was formed primarily to counter unilateral price cuts imposed on producing nations by Western multinational oil majors known as the 'Seven Sisters'."
+      },
+      {
+        id: 4,
+        category: "Founding & History",
+        question: "Which founding member nation initiated the concept of oil tax royalties that spurred collective sovereign bargaining in 1960?",
+        options: ["A) Saudi Arabia", "B) Iran", "C) Venezuela", "D) Kuwait"],
+        correct: 2,
+        explanation: "Venezuela (led by Juan Pablo Pérez Alfonzo) championed profit-sharing and tax royalty legislation, partnering with Saudi Arabia's Abdullah Tariki to rally founding nations."
+      },
+      {
+        id: 5,
+        category: "Structure & Governance",
+        question: "Which organ serves as the supreme authority of OPEC, responsible for formulating overall policy and approving production quotas?",
+        options: [
+          "A) The Secretariat",
+          "B) The Board of Governors",
+          "C) The Conference of Member Country Delegations",
+          "D) The Economic Commission Board"
+        ],
+        correct: 2,
+        explanation: "The Conference is the supreme authority consisting of delegations headed by Member Countries' Ministers of Oil and Energy."
+      },
+      {
+        id: 6,
+        category: "Structure & Governance",
+        question: "What is the official term length for the Secretary General of OPEC, who serves as the chief executive officer of the Secretariat?",
+        options: ["A) 1 Year (Non-renewable)", "B) 3 Years (Renewable once)", "C) 5 Years (Fixed term)", "D) 2 Years (Rotational)"],
+        correct: 1,
+        explanation: "The Secretary General is appointed by the Conference for a period of three years, which may be renewed once."
+      },
+      {
+        id: 7,
+        category: "Structure & Governance",
+        question: "How are decisions formulated during the official OPEC Conference meetings regarding binding quota agreements?",
+        options: [
+          "A) Simple majority vote of 51%",
+          "B) Weighted voting based on daily production capacity",
+          "C) Unanimous consent of all full Member Countries",
+          "D) Two-thirds supermajority"
+        ],
+        correct: 2,
+        explanation: "All Conference decisions require unanimity among Member Countries. A single member vote against a resolution blocks its formal adoption."
+      },
+      {
+        id: 8,
+        category: "Structure & Governance",
+        question: "Which specialized body within OPEC is tasked with monitoring global economic indicators and oil supply/demand balances to advise the Secretariat?",
+        options: [
+          "A) Joint Ministerial Monitoring Committee (JMMC)",
+          "B) Economic Commission Board (ECB)",
+          "C) Audit Committee",
+          "D) Sovereign Risk Council"
+        ],
+        correct: 1,
+        explanation: "The Economic Commission Board (ECB) is a permanent specialized body that assists the Organization in promoting stability in international oil markets."
+      },
+      {
+        id: 9,
+        category: "Market Dynamics & Economics",
+        question: "Why does a small change in OPEC production output cause a disproportionately large swing in benchmark crude oil prices?",
+        options: [
+          "A) Oil demand is highly price elastic in the short term",
+          "B) Oil demand is highly price inelastic in the short term",
+          "C) Refineries operate without long-term storage",
+          "D) Natural gas automatically offsets crude volume shifts"
+        ],
+        correct: 1,
+        explanation: "Short-term oil demand is inelastic (~-0.05 elasticity) because consumers cannot immediately change transport habits or equipment, causing sharp price responses to supply shifts."
+      },
+      {
+        id: 10,
+        category: "Market Dynamics & Economics",
+        question: "Which country has historically acted as the primary 'swing producer' within OPEC, adjusting output to stabilize prices?",
+        options: ["A) Iraq", "B) Venezuela", "C) Saudi Arabia", "D) Nigeria"],
+        correct: 2,
+        explanation: "Saudi Arabia holds the largest spare production capacity and lowest extraction costs, allowing it to act as the primary swing producer."
+      },
+      {
+        id: 11,
+        category: "Market Dynamics & Economics",
+        question: "In energy macroeconomics, what does a nation's 'Fiscal Breakeven Oil Price' represent?",
+        options: [
+          "A) The exact cost required to pump one barrel of oil out of the ground",
+          "B) The market price needed for a country to balance its national sovereign budget",
+          "C) The minimum price required for US shale drillers to turn a profit",
+          "D) The ceiling price mandated by consumer nations"
+        ],
+        correct: 1,
+        explanation: "The fiscal breakeven price is the crude oil price required for an oil-exporting nation to balance its national government budget."
+      },
+      {
+        id: 12,
+        category: "Market Dynamics & Economics",
+        question: "What primary metric replaced the old OPEC crude basket to improve daily benchmark pricing transparency across member streams?",
+        options: [
+          "A) OPEC Reference Basket (ORB)",
+          "B) Brent North Sea Spot Index",
+          "C) Dubai/Oman Average",
+          "D) Henry Hub Spot Price"
+        ],
+        correct: 0,
+        explanation: "The OPEC Reference Basket (ORB) is a weighted average of crudes produced by OPEC member countries, serving as a key benchmark."
+      },
+      {
+        id: 13,
+        category: "OPEC+ & Geopolitics",
+        question: "In what year was the historic 'OPEC+' alliance formally established via the Declaration of Cooperation in Vienna?",
+        options: ["A) 2010", "B) 2014", "C) 2016", "D) 2020"],
+        correct: 2,
+        explanation: "OPEC+ was formed in late 2016 when OPEC and 10 non-OPEC oil-producing nations, led by Russia, signed the Declaration of Cooperation."
+      },
+      {
+        id: 14,
+        category: "OPEC+ & Geopolitics",
+        question: "Which non-OPEC nation is considered the de facto co-leader of the broader OPEC+ coalition alongside Saudi Arabia?",
+        options: ["A) Norway", "B) Canada", "C) Russia", "D) Brazil"],
+        correct: 2,
+        explanation: "Russia is the largest non-OPEC contributor to the pact and acts alongside Saudi Arabia to steer coalition production adjustments."
+      },
+      {
+        id: 15,
+        category: "OPEC+ & Geopolitics",
+        question: "What was the primary geopolitical catalyst that forced major crude producers to form the OPEC+ alliance in 2016?",
+        options: [
+          "A) The 2014–2016 US shale oil boom causing a severe global crude price crash",
+          "B) The outbreak of conflict in Eastern Europe",
+          "C) The immediate shutdown of Middle Eastern maritime shipping straits",
+          "D) The global transition to electric vehicles"
+        ],
+        correct: 0,
+        explanation: "The US shale boom flooded global markets and triggered a severe oil price crash starting in late 2014, prompting OPEC to seek external cooperation."
+      },
+      {
+        id: 16,
+        category: "OPEC+ & Geopolitics",
+        question: "What is the primary operational function of the Joint Ministerial Monitoring Committee (JMMC)?",
+        options: [
+          "A) To manage direct military security of pipeline networks",
+          "B) To review member conformity levels with voluntary production cuts and market conditions",
+          "C) To negotiate bilateral trade agreements with the European Union",
+          "D) To set retail gasoline prices globally"
+        ],
+        correct: 1,
+        explanation: "The JMMC monitors production data compliance among participating countries in the Declaration of Cooperation."
+      },
+      {
+        id: 17,
+        category: "Energy Transition & Future",
+        question: "How do OPEC's long-term energy outlooks generally contrast with projections from the International Energy Agency (IEA)?",
+        options: [
+          "A) OPEC and IEA use identical models with zero divergence",
+          "B) OPEC projects robust long-term oil demand growth requiring substantial upstream investment, whereas IEA advocates rapid fossil fuel phase-down",
+          "C) OPEC calls for immediate global carbon taxes",
+          "D) IEA forecasts zero oil consumption by 2030"
+        ],
+        correct: 1,
+        explanation: "OPEC maintains that oil demand will continue growing through 2045 and require sustained investments, while the IEA emphasizes aggressive decarbonization."
+      },
+      {
+        id: 18,
+        category: "Energy Transition & Future",
+        question: "According to OPEC's World Oil Outlook, approximately how much cumulative upstream investment is needed in the oil sector by 2045?",
+        options: ["A) $500 Billion", "B) $2.5 Trillion", "C) $14 Trillion", "D) $50 Trillion"],
+        correct: 2,
+        explanation: "OPEC estimates that around $14 trillion in upstream, midstream, and downstream investments is required by 2045 to guarantee energy security."
+      },
+      {
+        id: 19,
+        category: "Energy Transition & Future",
+        question: "How are major Middle Eastern OPEC producers adapting their long-term domestic energy strategies for the transition?",
+        options: [
+          "A) Banning internal petrochemical refining",
+          "B) Investing heavily in utility-scale solar, blue/green hydrogen, and carbon capture technology",
+          "C) Transitioning national budgets entirely to nuclear exports",
+          "D) Terminating all gas exploration projects"
+        ],
+        correct: 1,
+        explanation: "Producers like Saudi Arabia and the UAE are positioning themselves as clean hydrogen and renewable exporters while deploying CCUS technologies."
+      },
+      {
+        id: 20,
+        category: "Energy Transition & Future",
+        question: "What role does OPEC argue petroleum will play in expanding access to modern energy in developing economies?",
+        options: [
+          "A) Oil will be entirely replaced by coal",
+          "B) Affordable petroleum fuels remain essential to lift energy poverty for billions across Asia and Africa",
+          "C) OPEC will subsidize electric vehicle fleets in rural nations",
+          "D) Developing nations will bypass oil directly to nuclear power"
+        ],
+        correct: 1,
+        explanation: "OPEC highlights energy equity, asserting that oil and gas are vital to eliminate energy poverty in developing economies where renewable infrastructure is scaling."
+      }
+    ];
+
+    let currentFilteredQuestions = [...questions];
+    let currentIndex = 0;
+    let userAnswers = new Array(questions.length).fill(null);
+    let quizTimerSeconds = 0;
+    let timerInterval = null;
+    let isTimerRunning = true;
+    let activeFilter = 'all';
+    let categoryChartInstance = null;
+    let highScore = localStorage.getItem('opec_quiz_high_score') || 0;
+
+    window.onload = function() {
+      document.getElementById('stat-high-score').innerText = highScore;
+      startTimer();
+      renderQuestionGrid();
+      loadQuestion(0);
+    };
+
+    function startTimer() {
+      if (timerInterval) clearInterval(timerInterval);
+      timerInterval = setInterval(() => {
+        if (isTimerRunning) {
+          quizTimerSeconds++;
+          const mins = String(Math.floor(quizTimerSeconds / 60)).padStart(2, '0');
+          const secs = String(quizTimerSeconds % 60).padStart(2, '0');
+          document.getElementById('stat-timer').innerText = `${mins}:${secs}`;
+        }
+      }, 1000);
+    }
+
+    function toggleTimerMode() {
+      isTimerRunning = !isTimerRunning;
+      document.getElementById('timer-status-text').innerText = isTimerRunning ? 'Pause Timer' : 'Resume Timer';
+    }
+
+    function loadQuestion(idx) {
+      if (idx < 0 || idx >= currentFilteredQuestions.length) return;
+      currentIndex = idx;
+
+      const q = currentFilteredQuestions[currentIndex];
+      const globalIdx = questions.findIndex(item => item.id === q.id);
+
+      document.getElementById('q-category-tag').innerText = q.category;
+      document.getElementById('q-number-tag').innerText = `QUESTION ${currentIndex + 1} OF ${currentFilteredQuestions.length}`;
+      document.getElementById('question-text').innerText = q.question;
+
+      const progressPct = ((currentIndex + 1) / currentFilteredQuestions.length) * 100;
+      document.getElementById('quiz-progress-bar').style.width = `${progressPct}%`;
+
+      const optionsContainer = document.getElementById('options-container');
+      optionsContainer.innerHTML = '';
+
+      const previousAnswer = userAnswers[globalIdx];
+
+      q.options.forEach((opt, optIdx) => {
+        const btn = document.createElement('button');
+        btn.className = 'option-btn w-full p-4 rounded-xl border border-brandBorder bg-brandCard text-left text-xs sm:text-sm text-slate-200 font-medium flex items-center justify-between gap-3';
+        btn.innerHTML = `<span>${opt}</span><i class="fa-regular fa-circle text-slate-600 opt-icon"></i>`;
+
+        if (previousAnswer !== null) {
+          btn.disabled = true;
+          if (optIdx === q.correct) {
+            btn.classList.add('border-emerald-500', 'bg-emerald-500/10', 'text-emerald-400');
+            btn.querySelector('.opt-icon').className = 'fa-solid fa-circle-check text-emerald-400';
+          } else if (optIdx === previousAnswer) {
+            btn.classList.add('border-red-500', 'bg-red-500/10', 'text-red-400');
+            btn.querySelector('.opt-icon').className = 'fa-solid fa-circle-xmark text-red-400';
+          }
+        } else {
+          btn.onclick = () => selectOption(globalIdx, optIdx);
+        }
+        optionsContainer.appendChild(btn);
+      });
+
+      const expCard = document.getElementById('explanation-card');
+      if (previousAnswer !== null) {
+        expCard.classList.remove('hidden');
+        const isCorrect = previousAnswer === q.correct;
+        expCard.className = `p-5 rounded-xl text-xs space-y-2 border ${isCorrect ? 'bg-emerald-500/10 border-emerald-500/30 text-emerald-400' : 'bg-red-500/10 border-red-500/30 text-red-400'}`;
+        document.getElementById('exp-title').innerHTML = isCorrect 
+          ? '<i class="fa-solid fa-circle-check"></i> Correct Assessment' 
+          : '<i class="fa-solid fa-circle-xmark"></i> Incorrect Answer';
+        document.getElementById('exp-text').innerText = q.explanation;
+      } else {
+        expCard.classList.add('hidden');
+      }
+
+      document.getElementById('prev-btn').disabled = currentIndex === 0;
+      document.getElementById('next-btn').querySelector('span').innerText = (currentIndex === currentFilteredQuestions.length - 1) ? "Finish Exam" : "Next";
+
+      updateQuestionGridUI();
+    }
+
+    function selectOption(globalIdx, optIdx) {
+      if (userAnswers[globalIdx] !== null) return;
+      userAnswers[globalIdx] = optIdx;
+      updateScoreboard();
+      loadQuestion(currentIndex);
+    }
+
+    function updateScoreboard() {
+      const correctCount = userAnswers.reduce((acc, ans, idx) => ans === questions[idx].correct ? acc + 1 : acc, 0);
+      document.getElementById('stat-score').innerText = `${correctCount} / ${questions.length}`;
+
+      if (correctCount > highScore) {
+        highScore = correctCount;
+        localStorage.setItem('opec_quiz_high_score', highScore);
+        document.getElementById('stat-high-score').innerText = highScore;
+      }
+    }
+
+    function nextQuestion() {
+      if (currentIndex < currentFilteredQuestions.length - 1) {
+        loadQuestion(currentIndex + 1);
+      } else {
+        showResultsDashboard();
+      }
+    }
+
+    function prevQuestion() {
+      if (currentIndex > 0) loadQuestion(currentIndex - 1);
+    }
+
+    function skipQuestion() {
+      nextQuestion();
+    }
+
+    function renderQuestionGrid() {
+      const grid = document.getElementById('question-grid');
+      grid.innerHTML = '';
+      currentFilteredQuestions.forEach((q, idx) => {
+        const globalIdx = questions.findIndex(item => item.id === q.id);
+        const btn = document.createElement('button');
+        btn.className = 'h-9 rounded-lg font-mono text-xs font-bold border transition flex items-center justify-center';
+        
+        const ans = userAnswers[globalIdx];
+        if (ans === null) {
+          btn.className += ' bg-brandDark border-brandBorder text-slate-400 hover:border-slate-500';
+        } else if (ans === q.correct) {
+          btn.className += ' bg-emerald-500/20 border-emerald-500 text-emerald-400';
+        } else {
+          btn.className += ' bg-red-500/20 border-red-500 text-red-400';
+        }
+
+        btn.innerText = idx + 1;
+        btn.onclick = () => loadQuestion(idx);
+        grid.appendChild(btn);
+      });
+      document.getElementById('question-map-counter').innerText = `${currentFilteredQuestions.length} Questions`;
+    }
+
+    function updateQuestionGridUI() {
+      renderQuestionGrid();
+    }
+
+    function setCategoryFilter(category) {
+      activeFilter = category;
+      if (category === 'all') {
+        currentFilteredQuestions = [...questions];
+      } else {
+        currentFilteredQuestions = questions.filter(q => q.category === category);
+      }
+      currentIndex = 0;
+      loadQuestion(0);
+    }
+
+    function filterQuestionsBySearch() {
+      const query = document.getElementById('search-input').value.toLowerCase();
+      const resultsBox = document.getElementById('search-results-list');
+      
+      if (!query.trim()) {
+        resultsBox.classList.add('hidden');
+        return;
+      }
+
+      const matches = questions.filter(q => q.question.toLowerCase().includes(query) || q.explanation.toLowerCase().includes(query));
+      resultsBox.innerHTML = '';
+      
+      if (matches.length === 0) {
+        resultsBox.innerHTML = '<div class="p-2 text-slate-500">No matching questions found</div>';
+      } else {
+        matches.slice(0, 5).forEach(match => {
+          const globalIdx = questions.findIndex(q => q.id === match.id);
+          const item = document.createElement('button');
+          item.className = 'w-full text-left p-2 rounded hover:bg-brandDark transition truncate block text-slate-300';
+          item.innerText = `Q${globalIdx + 1}: ${match.question}`;
+          item.onclick = () => {
+            currentFilteredQuestions = [...questions];
+            const targetIdx = currentFilteredQuestions.findIndex(q => q.id === match.id);
+            loadQuestion(targetIdx);
+            resultsBox.classList.add('hidden');
+          };
+          resultsBox.appendChild(item);
+        });
+      }
+      resultsBox.classList.remove('hidden');
+    }
+
+    function showResultsDashboard() {
+      isTimerRunning = false;
+      clearInterval(timerInterval);
+
+      document.getElementById('quiz-card-view').classList.add('hidden');
+      document.getElementById('results-dashboard').classList.remove('hidden');
+
+      const correctCount = userAnswers.reduce((acc, ans, idx) => ans === questions[idx].correct ? acc + 1 : acc, 0);
+      const accuracy = Math.round((correctCount / questions.length) * 100);
+
+      document.getElementById('res-accuracy-pct').innerText = `${accuracy}%`;
+      document.getElementById('res-score-raw').innerText = `${correctCount} / ${questions.length} Correct`;
+
+      const mins = String(Math.floor(quizTimerSeconds / 60)).padStart(2, '0');
+      const secs = String(quizTimerSeconds % 60).padStart(2, '0');
+      document.getElementById('res-time-spent').innerText = `${mins}:${secs}`;
+
+      let rankTitle = "Senior Energy Analyst";
+      let rankSub = "Expert Geopolitical Competency";
+      if (accuracy >= 90) { rankTitle = "OPEC Ministerial Delegate"; rankSub = "Elite Mastery"; }
+      else if (accuracy >= 75) { rankTitle = "Senior Energy Economist"; rankSub = "Advanced Proficiency"; }
+      else if (accuracy >= 50) { rankTitle = "Market Analyst"; rankSub = "Intermediate Knowledge"; }
+      else { rankTitle = "Junior Researcher"; rankSub = "Foundational Stage"; }
+
+      document.getElementById('res-rank-title').innerText = rankTitle;
+      document.getElementById('res-rank-subtitle').innerText = rankSub;
+
+      renderCategoryChart();
+    }
+
+    function renderCategoryChart() {
+      const ctx = document.getElementById('categoryChart').getContext('2d');
+      const categories = ['Founding & History', 'Structure & Governance', 'Market Dynamics & Economics', 'OPEC+ & Geopolitics', 'Energy Transition & Future'];
+      
+      const catStats = categories.map(cat => {
+        const catQs = questions.filter(q => q.category === cat);
+        const correct = catQs.filter(q => {
+          const gIdx = questions.findIndex(item => item.id === q.id);
+          return userAnswers[gIdx] === q.correct;
+        }).length;
+        return Math.round((correct / catQs.length) * 100);
+      });
+
+      if (categoryChartInstance) categoryChartInstance.destroy();
+
+      categoryChartInstance = new Chart(ctx, {
+        type: 'bar',
+        data: {
+          labels: categories.map(c => c.split(' ')[0] + '...'),
+          datasets: [{
+            label: 'Category Accuracy %',
+            data: catStats,
+            backgroundColor: '#D4AF37',
+            borderRadius: 6
+          }]
+        },
+        options: {
+          responsive: true,
+          maintainAspectRatio: false,
+          plugins: { legend: { display: false } },
+          scales: {
+            y: { beginAtZero: true, max: 100, ticks: { color: '#8A99AD' }, grid: { color: '#30363D' } },
+            x: { ticks: { color: '#8A99AD', font: { size: 10 } }, grid: { display: false } }
+          }
+        }
+      });
+    }
+
+    function startReviewMode() {
+      document.getElementById('results-dashboard').classList.add('hidden');
+      document.getElementById('quiz-card-view').classList.remove('hidden');
+      currentFilteredQuestions = [...questions];
+      loadQuestion(0);
+    }
+
+    function restartQuiz() {
+      userAnswers = new Array(questions.length).fill(null);
+      quizTimerSeconds = 0;
+      isTimerRunning = true;
+      document.getElementById('results-dashboard').classList.add('hidden');
+      document.getElementById('quiz-card-view').classList.remove('hidden');
+      currentFilteredQuestions = [...questions];
+      startTimer();
+      loadQuestion(0);
+      updateScoreboard();
+    }
+  </script>
+</body>
+</html>
